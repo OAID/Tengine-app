@@ -1,3 +1,11 @@
 # Tengine-app
-This is a repository for applications powered by Tengine, inside this repository contains details of this App. You can simply go ***[android/classification](android/classification)*** and you will see instructions for operation. Please feel free to try them on your device.
+This is a repository for applications powered by Tengine. Please feel free to try them on your device.
+
+### Application List:
+
+#### 1.  Android Image Classification 
+
+​      This App based on the Tengine engine can classify Images from your Devices.
+
+[Link for More Details.](https://github.com/OAID/Tengine-app/tree/master/android/classification)
 
