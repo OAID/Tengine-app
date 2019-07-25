@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Real-time Classify</string>
+    <string-array name="models">
+        <item>Float</item>
+        <item>Quantized</item>
+    </string-array>
+    <string name="device">Device:</string>
+    <string-array name="devices">
+        <item>CPU</item>
+        <item>GPU</item>
+    </string-array>
+    <string name="threads">Threads:</string>
+
+    <string name="model">Model:</string>
+</resources>
