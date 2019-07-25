@@ -28,7 +28,7 @@ For Windows:
 - If you already have Android SDK, it is under directory \sdk\platform-tools. Or download SDK here: http://developer.android.com/sdk/index.html 
 - Find the adb and add it to your system environment variable. Then you can use adb command in terminal.
 
-- Use adb –version to make sure it is installed correctly.
+- Use adb â€“version to make sure it is installed correctly.
 
 If you already have libtengine.so, place the library and other relative libraries into app/src/main/JniLibs/arm64-v8a. If you have not complied the library yet, please follow [Android build](https://github.com/OAID/Tengine/blob/master/doc/build_android.md). 
 
@@ -40,7 +40,7 @@ adb push your-model-name /data/local/tmp
 ```
 In my case,
 ```
-adb push mobilenet.caffemodel mobilenet_deploy.prototx synset_words /data/local/tmp
+adb push detect.tflite coco_labels_list.txt /data/local/tmp
 ```
 - Go to Android Studio, sync and build/run the project. 
 <img src ="https://github.com/OAID/Tengine-app/blob/master/android/classification/app/src/asset/Sync.png">
