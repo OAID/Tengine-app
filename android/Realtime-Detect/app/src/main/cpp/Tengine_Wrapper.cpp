@@ -100,7 +100,6 @@ int TengineWrapper::get_input_data(const char* image, float* data, int img_h, in
     float *img_data = (float *)img.data;
     int hw = img_h * img_w;
     float mean[3]={104.f,117.f,123.f};
-    //float mean[3]={127.5,127.5,127.5};
     for (int h = 0; h < img_h; h++)
     {
         for (int w = 0; w < img_w; w++)
@@ -112,8 +111,6 @@ int TengineWrapper::get_input_data(const char* image, float* data, int img_h, in
             }
         }
     }
-
-/**/
     return 0;
 }
 
@@ -121,19 +118,7 @@ int TengineWrapper::get_input_data(cv::Mat img, uint8_t* data, int img_h, int im
 {
     if (img.empty())
         return 1;
-//    cv::Mat img;
-//    if (sample.channels() == 4)
-//    {
-//        cv::cvtColor(sample, img, cv::COLOR_BGRA2BGR);
-//    }
-//    else if (sample.channels() == 1)
-//    {
-//        cv::cvtColor(sample, img, cv::COLOR_GRAY2BGR);
-//    }
-//    else
-//    {
-//        img=sample;
-//    }
+
     cv::cvtColor(img,img,cv::COLOR_RGBA2BGR);
     cv::resize(img, img, cv::Size(img_h, img_w));
     img.convertTo(img, CV_32FC3);
@@ -180,149 +165,7 @@ int TengineWrapper::RunTengine(cv::Mat sample)
     }
     return 0;
 }
-/** for caffe**/
-//std::string TengineWrapper::GetTop1(int num)
-//{
-////    const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//    if(data == NULL)
-//    {
-//        LOGE("get output data data == NULL");
-//        return nullptr;
-//    }
-//    return result[data[0+(num-1)*6]];
-//
-//}
-//
-//float TengineWrapper::Getprob(int num)
-//{
-////    const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//
-//
-//    return data[1+(num-1)*6];
-//}
-//
-//float TengineWrapper::GetLeft(int num)
-//{
-////    const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//
-//    return data[2+(num-1)*6];
-//}
-//float TengineWrapper::GetTop(int num)
-//{
-////   const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//
-//
-//    return data[3+(num-1)*6];
-//}
-//float TengineWrapper::GetRight(int num)
-//{
-////    const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//
-//    return data[4+(num-1)*6];
-//}
-//float TengineWrapper::Getbuttom(int num)
-//{
-////    const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//
-//    return data[5+(num-1)*6];
-//}
-//int TengineWrapper::ObjectNum()
-//{
-////    const char* label_file = "/data/local/tmp/coco_labels_list.txt";
-//    std::vector<std::string> result;
-//    std::ifstream labels(label_file);
-//
-//    std::string line;
-//    while (std::getline(labels, line))
-//        result.push_back(line);
-//
-//    int true_id = 0;
-//    float true_score=0.f;
-//
-//    tensor_t output_tensor = get_graph_output_tensor(g_mobilenet, 0, 0);
-//    float *data = (float *)get_tensor_buffer(output_tensor);
-//    int out_dim[4];
-//    int ret = get_tensor_shape(output_tensor,out_dim,4);
-//    if(ret <= 0)
-//    {
-//        std::cout << "get tensor shape failed, errno: " << get_tengine_errno() << "\n";
-//        return 1;
-//    }
-//    int num = out_dim[1];
-//    return num;
-//}
+
 /**int8.tflite**/
 std::string TengineWrapper::GetTop1(int num)
 {
