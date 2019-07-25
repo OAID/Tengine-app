@@ -30,9 +30,10 @@ For Windows:
 
 - Use adb –version to make sure it is installed correctly.
 
-Under the app/src/main/assets folder, place the .so libraries into app/src/main/JniLibs/arm64-v8a.
+Place the opencv library and other relative libraries into app/src/main/JniLibs/arm64-v8a. 
 
-Use adb to push your model and label file in your file.
+Use adb to push your model and label file in your file. Please [find them here](https://pan.baidu.com/s/1LXZ8vOdyOo50IXS0CUPp8g#list/path=%2F) (psw:57vb). For this Demo, you will need "detect.tflite" and "coco_labels_list.txt" under path Tengine_models/tflite
+
 ```
 adb push your-model-name /data/local/tmp
 ```
@@ -52,7 +53,7 @@ You may need to edit the model and its label based on your preference.
  
 
 - You need to change the corresponding model input and output. 
-- e. g: In the following case, the input is 300 * 300 for int8 TFLite model. And dimension is {1, 300, 300, 3}. If you want to change model to MobileNet SSD Caffe model, the size then needs to be 224*224. And dimension will be changed to {1, 3, 224, 224}. (Hint: Make sure you change all the code mentioning size and dimension in Tengine-Wrapper. The following snapshot is only for reference)
+- e. g: In the following case, the input is 300 * 300 for int8 TFLite model. And dimension is {1, 300, 300, 3}. If you want to change model to MobileNet SSD Caffe model, the size then needs to be 224* 224. And dimension will be changed to {1, 3, 224, 224}. (Hint: Make sure you change all the code mentioning size and dimension in Tengine-Wrapper. The following snapshot is only for reference)
  
 
 ## Build your own library 

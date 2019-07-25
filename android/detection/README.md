@@ -30,7 +30,9 @@ For Windows:
 
 - Use adb –version to make sure it is installed correctly.
 
-Under the app/src/main/assets folder, place the .so libraries into app/src/main/JniLibs/arm64-v8a.
+If you already have libtengine.so, place the library and other relative libraries into app/src/main/JniLibs/arm64-v8a. If you have not complied the library yet, please follow [Android build](https://github.com/OAID/Tengine/blob/master/doc/build_android.md). 
+
+Use adb to push your model and label file in your file. Please [find them here](https://pan.baidu.com/s/1LXZ8vOdyOo50IXS0CUPp8g#list/path=%2F) (psw:57vb). For this Demo, you will need "detect.tflite" and "coco_labels_list.txt" under path Tengine_models/tflite
 
 Use adb to push your model and label file in your file.
 ```

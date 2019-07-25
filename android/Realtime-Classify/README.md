@@ -30,7 +30,10 @@ For Windows:
 
 - Use adb –version to make sure it is installed correctly.
 
-Under the app/src/main/assets folder, place the .so libraries into app/src/main/JniLibs/arm64-v8a.
+If you already have libtengine.so, place the library and other relative libraries into app/src/main/JniLibs/arm64-v8a. If you have not complied the library yet, please follow [Android build](https://github.com/OAID/Tengine/blob/master/doc/build_android.md). 
+
+Use adb to push your model and label file in your file. Please [find them here](https://pan.baidu.com/s/1LXZ8vOdyOo50IXS0CUPp8g#list/path=%2F) (psw:57vb). For this Demo, you will need "mobilenet.caffemodel","mobilenet_deploy.prototxt and "synset_words.txt" under path Tengine_models/mobilenet/caffe
+
 
 Use adb to push your model and label file in your file.
 ```
@@ -38,7 +41,7 @@ adb push your-model-name /data/local/tmp
 ```
 In my case,
 ```
-adb push mobilenet.caffemodel mobilenet_deploy.prototx synset_words /data/local/tmp
+adb push mobilenet.caffemodel mobilenet_deploy.prototxt synset_words /data/local/tmp
 ```
 - Go to Android Studio, sync and build/run the project. 
 <img src ="https://github.com/OAID/Tengine-app/blob/master/android/classification/app/src/asset/Sync.png">
