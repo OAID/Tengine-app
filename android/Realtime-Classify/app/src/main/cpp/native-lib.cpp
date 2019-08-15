@@ -112,11 +112,11 @@ Java_com_tengine_openailab_application_classification_MainActivity_deviceChange(
         JNIEnv *env,
         jobject /* this */, jstring dev_name) {
     const char *dev = env->GetStringUTFChars(dev_name, 0);
-    if(tengine_wrapper->changeDevice(dev)){
+//    if(tengine_wrapper->changeDevice(dev)){
         return 0;
-    } else{
-        return -1;
-    }
+//    } else{
+//        return -1;
+//    }
 }
 
 

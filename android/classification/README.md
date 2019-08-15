@@ -22,7 +22,8 @@
 
 ``` ruby
 adb devices
-adb push frozen_mobilenet_v1_224.pb /data/local/tmp/
+adb push mobilenet_deploy.prototxt /data/local/tmp/
+adb push mobilenet.caffemodel /data/local/tmp/
 adb push synset_words.txt /data/local/tmp/
 
 ```

@@ -40,7 +40,7 @@ adb push your-model-name /data/local/tmp
 ```
 In my case,
 ```
-adb push mobilenet.caffemodel mobilenet_deploy.prototxt synset_words /data/local/tmp
+adb push frozen_mobilenet_v1_224.pb synset_words /data/local/tmp
 ```
 - Go to Android Studio, sync and build/run the project. 
 <img src ="https://github.com/OAID/Tengine-app/blob/master/android/classification/app/src/asset/Sync.png">

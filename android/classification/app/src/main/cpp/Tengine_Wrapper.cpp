@@ -8,45 +8,62 @@
 #include <fstream>
 #include "Tengine_Wrapper.h"
 #include "opencv2/imgcodecs.hpp"
+#include <android/log.h>
+#define  LOG_TAG    "TENGINE_WRAPPER"
+#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG, __VA_ARGS__)
+#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG, __VA_ARGS__)
+#define LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG, __VA_ARGS__)
+#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG, __VA_ARGS__)
+#define LOGF(...)  __android_log_print(ANDROID_LOG_FATAL,LOG_TAG, __VA_ARGS__)
 
-
+void tengine_core_log_print_t(const char* log){
+    LOGE("TENGINE CORE LOG:%s\n",log);
+}
 int TengineWrapper::InitTengine()
 {
-    init_tengine_library();
+    set_log_level(LOG_DEBUG);
+    set_log_output(tengine_core_log_print_t);
+    int ret = init_tengine();
+    LOGE("[%s][%d]ret:%d\n",__FUNCTION__,__LINE__,ret);
     if (request_tengine_version("0.1") < 0)
         return -1;
+//    const char* mobilenet_tf_model = "/data/local/tmp/mobilenet_quant_tflite.tmfile";
+    const char* mobilenet_caffe_proto = "/data/local/tmp/mobilenet_deploy.prototxt";
+    const char* mobilenet_caffe_model = "/data/local/tmp/mobilenet.caffemodel";
+    const char* format = "caffe";
 
-    const char* mobilenet_tf_model = "/data/local/tmp/frozen_mobilenet_v1_224.pb";
-    //const char* mobilenet_caffe_proto = "/sdcard/openailab/models/mobilenet_deploy.prototxt";
-    //const char* mobilenet_caffe_model = "/sdcard/openailab/models/mobilenet.caffemodel";
-    const char* format = "tensorflow";
+    g_mobilenet = create_graph(nullptr,format,mobilenet_caffe_proto,mobilenet_caffe_model);
+//    g_mobilenet =create_graph(nullptr,format,mobilenet_tf_model);
+//    if(dump_graph(g_mobilenet);
 
-    if (load_model("mobilenet", format, mobilenet_tf_model) < 0)
-    //if (load_model("mobilenet", format, mobilenet_caffe_proto, mobilenet_caffe_model) < 0)
-        return 4;
-
-
-    g_mobilenet = create_runtime_graph("graph0","mobilenet",NULL);
-    if (!check_graph_valid(g_mobilenet))
-        return 5;
+    if(g_mobilenet == nullptr)
+    {
+        LOGE("[%s][%d] Create graph failed.\n",__FUNCTION__,__LINE__);
+        return false;
+    }
 
     const int img_h = 224;
     const int img_w = 224;
 
     int image_size = img_h * img_w * 3;
-    g_mobilenet_input = (float*) malloc(sizeof(float) * image_size);
-
-    int dims[4] = {1, 3, img_h, img_w};
+    int image_buffer_size = sizeof(float) * image_size;
+    LOGE("[%s][%d] image_buffer_size:%d\n",__FUNCTION__,__LINE__,image_buffer_size);
+    g_mobilenet_input = (float*) malloc(image_buffer_size);
+    LOGE("[%s][%d]%p\n",__FUNCTION__,__LINE__,g_mobilenet_input);
+    int dims[4] = {1,  3, img_h, img_w};
 
     tensor_t input_tensor = get_graph_input_tensor(g_mobilenet, 0, 0);
-    if(!check_tensor_valid(input_tensor))
+    if(input_tensor == nullptr)
         return 6;
 
     set_tensor_shape(input_tensor, dims, 4);
-    set_tensor_buffer(input_tensor, g_mobilenet_input, image_size * 4);
 
     if( prerun_graph(g_mobilenet)!=0 )
+    {
+        LOGE("[%s][%d]prerun_graph fail\n",__FUNCTION__,__LINE__);
         return 1;
+    }
+    set_tensor_buffer(input_tensor, g_mobilenet_input, image_buffer_size);
 
     return 0;
 }
@@ -55,14 +72,11 @@ int TengineWrapper::InitTengine()
 int TengineWrapper::ReleaseTengine()
 {
     sleep(1);
-    /*
     tensor_t input_tensor = get_graph_input_tensor(g_mobilenet, 0, 0);
     put_graph_tensor(input_tensor);
     free(g_mobilenet_input);
     postrun_graph(g_mobilenet);
-    destroy_runtime_graph(g_mobilenet);
-    remove_model("mobilenet");
-     */
+    destroy_graph(g_mobilenet);
     return 0;
 }
 
@@ -108,8 +122,10 @@ int TengineWrapper::get_input_data(const char* image, float* data, int img_h, in
 
 int TengineWrapper::get_input_data(cv::Mat sample, float* data, int img_h, int img_w)
 {
+    LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
     if (sample.empty())
         return 1;
+    LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
     cv::Mat img;
     if (sample.channels() == 4)
     {
@@ -123,12 +139,16 @@ int TengineWrapper::get_input_data(cv::Mat sample, float* data, int img_h, int i
     {
         img=sample;
     }
+    LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
     cv::resize(img, img, cv::Size(img_h, img_w));
+    LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
     img.convertTo(img, CV_32FC3);
+    LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
     float *img_data = (float *)img.data;
     int hw = img_h * img_w;
     float mean[3]={104.f,117.f,123.f};
     //float mean[3]={127.5,127.5,127.5};
+    int i=0;
     for (int h = 0; h < img_h; h++)
     {
         for (int w = 0; w < img_w; w++)
@@ -140,6 +160,7 @@ int TengineWrapper::get_input_data(cv::Mat sample, float* data, int img_h, int i
             }
         }
     }
+    LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
 
 /**/
     return 0;
@@ -150,7 +171,8 @@ int TengineWrapper::RunTengine(const char* image)
 
     if( get_input_data(image, g_mobilenet_input, 224, 224) )
         return 7;
-
+    if (!set_tensor_buffer(get_graph_input_tensor(g_mobilenet, 0, 0), g_mobilenet_input, 224 * 224 * 4 * 3))
+        return 3;
     if( !run_graph(g_mobilenet,1))
         return 2;
 
@@ -160,10 +182,20 @@ int TengineWrapper::RunTengine(cv::Mat sample)
 {
 
     if( get_input_data(sample, g_mobilenet_input, 224, 224) )
+    {
+        LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
         return 7;
-
-    if( !run_graph(g_mobilenet,1))
+    }
+    if (set_tensor_buffer(get_graph_input_tensor(g_mobilenet, 0, 0), g_mobilenet_input, 224 * 224 * 4 *3)==-1)
+    {
+        LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
+        return 3;
+    }
+    if(run_graph(g_mobilenet,1)<0)
+    {
+        LOGE("[%s][%d]\n",__FUNCTION__,__LINE__);
         return 2;
+    }
 
     return 0;
 }
